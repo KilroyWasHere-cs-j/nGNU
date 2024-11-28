@@ -17,6 +17,11 @@ fn print_type_of<T>(_: &T) {
     println!("{}", std::any::type_name::<T>());
 }
 
+// Used to set the premissions for a file
+fn set_permissions(file: File, prem: &str) -> std::io::Result<()> {
+    Ok(())
+}
+
 fn main() -> std::io::Result<()> {
     // Collect the arguments
     let args: Vec<String> = env::args().collect();
@@ -38,6 +43,8 @@ fn main() -> std::io::Result<()> {
 
         if !full_path.exists() {
             let mut file = File::create(&file_name)?;
+            let metadata = file.metadata()?;
+            let _ = set_permissions(file, "wrx");
             print!("0");
             process::exit(0);
         } else {
