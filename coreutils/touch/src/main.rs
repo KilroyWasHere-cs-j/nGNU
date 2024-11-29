@@ -18,7 +18,10 @@ fn print_type_of<T>(_: &T) {
 }
 
 // Used to set the premissions for a file
-fn set_permissions(file: File, prem: &str) -> std::io::Result<()> {
+fn set_permissions(file: &str, prem: &str) -> std::io::Result<()> {
+    let mut prems = fs::metadata(file)?.permissions();
+    prems.set_readonly(true);
+    let _ = fs::set_permissions(file, prems);
     Ok(())
 }
 
@@ -44,7 +47,7 @@ fn main() -> std::io::Result<()> {
         if !full_path.exists() {
             let mut file = File::create(&file_name)?;
             let metadata = file.metadata()?;
-            let _ = set_permissions(file, "wrx");
+            let _ = set_permissions(&file_name, "wrx");
             print!("0");
             process::exit(0);
         } else {
